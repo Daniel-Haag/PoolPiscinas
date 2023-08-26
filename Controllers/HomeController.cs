@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PoolPiscinas.Models;
 using System;
@@ -20,6 +21,8 @@ namespace PoolPiscinas.Controllers
 
         public IActionResult Index()
         {
+            //var teste = HttpContext.Session.GetString("Nome");
+
             return View();
         }
 

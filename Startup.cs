@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PoolPiscinas.Sessions;
+using Microsoft.AspNetCore.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace PoolPiscinas
 {
@@ -25,12 +29,18 @@ namespace PoolPiscinas
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options =>
-                    {
-                        options.LoginPath = "/Login"; // Página de login
-                        options.LogoutPath = "/Logout"; // Página de logout
-                    });
+
+            services.AddSession();
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //        .AddCookie(options =>
+            //        {
+            //            options.LoginPath = "/Login"; // Página de login
+            //            options.LogoutPath = "/Logout"; // Página de logout
+            //        });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAuthenticatedUser", policy =>
@@ -38,6 +48,8 @@ namespace PoolPiscinas
                     policy.RequireAuthenticatedUser();
                 });
             });
+
+            services.AddScoped<IUsuarioService, UsuarioService>();
 
             //string connectionString = Configuration.GetConnectionString("DefaultConnection");
             //services.AddDbContext<SeuDbContext>(options =>
@@ -60,7 +72,9 @@ namespace PoolPiscinas
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -68,6 +82,8 @@ namespace PoolPiscinas
                     name: "default",
                     pattern: "{controller=Login}/{action=Login}/{id?}");
             });
+
+            
         }
     }
 }

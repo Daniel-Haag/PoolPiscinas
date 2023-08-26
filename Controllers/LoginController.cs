@@ -9,16 +9,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using PoolPiscinas.Sessions;
+using Microsoft.AspNetCore.Http;
 
 namespace PoolPiscinas.Controllers
 {
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> _logger;
+        private IUsuarioService _usuarioService;
 
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ILogger<LoginController> logger,
+                               IUsuarioService usuarioService)
         {
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
         public IActionResult Login()
@@ -34,11 +39,27 @@ namespace PoolPiscinas.Controllers
                 return View();
             }
 
-            if ((loginModel.CPF == "validcpf" || loginModel.CNPJ == "validcnpj") && loginModel.Senha == "password")
+            if ((loginModel.CPF == "111.111.111-11" || loginModel.CNPJ == "11.111.111/1111-11") && loginModel.Senha == "password")
             {
+                var usuarioLogando = new Usuario
+                {
+                    Nome = "Usuario 1",
+                    Senha = "123"
+                };
+
+                var usuario = _usuarioService.Login(usuarioLogando);
+
+                if (usuario != null)
+                {
+                    HttpContext.Session.SetString("Nome", usuario.Nome);
+                    return RedirectToAction("Index", "Home");
+                }
+
+                //-----------------------------------
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "username"), // substituir por um nome de usuário real
+                    new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
                     //Adicionar outras claims aqui, se necessário
                 };
 
@@ -55,15 +76,16 @@ namespace PoolPiscinas.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Tentativa inválida de login.");
                 return View();
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Nome");
+
             return RedirectToAction("Login", "Login");
         }
 
