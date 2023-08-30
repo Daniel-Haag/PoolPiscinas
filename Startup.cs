@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
+using PoolPiscinas.Models;
 
 namespace PoolPiscinas
 {
@@ -51,9 +52,10 @@ namespace PoolPiscinas
 
             services.AddScoped<IUsuarioService, UsuarioService>();
 
-            //string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            //services.AddDbContext<SeuDbContext>(options =>
-            //    options.UseMySql(connectionString));
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<PoolPiscinasDbContext>(options =>
+                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 1, 0))));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
