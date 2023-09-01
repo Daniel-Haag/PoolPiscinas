@@ -64,8 +64,6 @@ namespace PoolPiscinas
 
             app.UseRouting();
 
-            //app.UseAuthorization();
-
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
@@ -74,8 +72,6 @@ namespace PoolPiscinas
                     name: "default",
                     pattern: "{controller=Login}/{action=Login}/{id?}");
             });
-
-            
         }
     }
 }
