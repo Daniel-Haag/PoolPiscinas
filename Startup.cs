@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using PoolPiscinas.Models;
+using PoolPiscinas.Interfaces;
+using PoolPiscinas.Services;
 
 namespace PoolPiscinas
 {
@@ -30,18 +32,8 @@ namespace PoolPiscinas
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
             services.AddSession();
-
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //        .AddCookie(options =>
-            //        {
-            //            options.LoginPath = "/Login"; // Página de login
-            //            options.LogoutPath = "/Logout"; // Página de logout
-            //        });
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAuthenticatedUser", policy =>
@@ -49,11 +41,9 @@ namespace PoolPiscinas
                     policy.RequireAuthenticatedUser();
                 });
             });
-
             services.AddScoped<IUsuarioService, UsuarioService>();
-
+            services.AddScoped<ILoginService, LoginService>();
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
-
             services.AddDbContext<PoolPiscinasDbContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 1, 0))));
         }

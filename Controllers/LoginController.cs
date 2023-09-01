@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using PoolPiscinas.Sessions;
 using Microsoft.AspNetCore.Http;
+using PoolPiscinas.Interfaces;
 
 namespace PoolPiscinas.Controllers
 {
@@ -18,16 +19,20 @@ namespace PoolPiscinas.Controllers
     {
         private readonly ILogger<LoginController> _logger;
         private IUsuarioService _usuarioService;
+        private ILoginService _loginService;
 
         public LoginController(ILogger<LoginController> logger,
-                               IUsuarioService usuarioService)
+                               IUsuarioService usuarioService,
+                               ILoginService loginService)
         {
             _logger = logger;
             _usuarioService = usuarioService;
+            _loginService = loginService;
         }
 
         public IActionResult Login()
         {
+            _loginService.RemoveSession(HttpContext);
             return View();
         }
 
@@ -84,8 +89,7 @@ namespace PoolPiscinas.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("Nome");
-
+            _loginService.RemoveSession(HttpContext);
             return RedirectToAction("Login", "Login");
         }
 
