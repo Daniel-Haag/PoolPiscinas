@@ -15,12 +15,24 @@ namespace PoolPiscinas.Sessions
                 new Usuario()
                 {
                     Nome = "Usuario 1",
-                    Senha = "123"
+                    Senha = "123",
+                    Role = new Role()
+                    {
+                        RoleID = 1,
+                        Nome = "Piscineiro",
+                        Ativo = true
+                    }
                 },
                 new Usuario()
                 {
                     Nome = "Usuario 2",
-                    Senha = "123"
+                    Senha = "123",
+                    Role = new Role()
+                    {
+                        RoleID = 1,
+                        Nome = "Piscineiro",
+                        Ativo = true
+                    }
                 }
             };
 

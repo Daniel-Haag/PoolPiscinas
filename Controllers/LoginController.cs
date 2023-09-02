@@ -49,7 +49,13 @@ namespace PoolPiscinas.Controllers
                 var usuarioLogando = new Usuario
                 {
                     Nome = "Usuario 1",
-                    Senha = "123"
+                    Senha = "123",
+                    Role = new Role()
+                    {
+                        RoleID = 1,
+                        Nome = "Franqueado",
+                        Ativo = true
+                    }
                 };
 
                 var usuario = _usuarioService.Login(usuarioLogando);
@@ -57,6 +63,7 @@ namespace PoolPiscinas.Controllers
                 if (usuario != null)
                 {
                     HttpContext.Session.SetString("Nome", usuario.Nome);
+                    HttpContext.Session.SetString("Role", usuario.Role.Nome);
                     return RedirectToAction("Index", "Home");
                 }
 

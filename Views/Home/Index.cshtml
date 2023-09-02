@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
     ViewBag.Title = "Agenda";
     System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("pt-BR");
     System.Threading.Thread.CurrentThread.CurrentCulture = culture;
@@ -103,6 +106,27 @@
                                 <!-- Opções de clientes -->
                             </select>
                         </div>
+                        @{
+                            var role = HttpContextAccessor?.HttpContext?.Session.GetString("Role");
+                        }
+
+                        @if (role == "Franqueado")
+                        {
+                            <div class="form-group">
+                                <label for="clientSelect">Selecionar Piscineiro</label>
+                                <select class="form-control" id="piscineiroSelect" name="piscineiroSelect">
+                                    <option value="">Selecione um piscineiro</option>
+                                    <!-- Opções de piscineiros -->
+                                </select>
+                            </div>
+                        }
+                        else if (role == "Piscineiro")
+                        {
+                            <div class="form-group">
+                                <label for="piscineiroName">Nome do Piscineiro</label>
+                                <input type="text" class="form-control" id="piscineiroName" name="piscineiroName" value="Nome do Piscineiro" readonly>
+                            </div>
+                        }
                         <div class="form-group">
                             <label for="clientName">Nome do Cliente</label>
                             <input type="text" class="form-control" id="clientName" name="clientName" disabled>

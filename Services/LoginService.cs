@@ -11,6 +11,7 @@ namespace PoolPiscinas.Services
         public void RemoveSession(HttpContext HttpContext)
         {
             HttpContext.Session.Remove("Nome");
+            HttpContext.Session.Remove("Role");
         }
     }
 }
