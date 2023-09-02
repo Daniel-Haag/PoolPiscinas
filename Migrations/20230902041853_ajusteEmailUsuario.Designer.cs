@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PoolPiscinas.Models;
 
 namespace PoolPiscinas.Migrations
 {
     [DbContext(typeof(PoolPiscinasDbContext))]
-    partial class PoolPiscinasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230902041853_ajusteEmailUsuario")]
+    partial class ajusteEmailUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
