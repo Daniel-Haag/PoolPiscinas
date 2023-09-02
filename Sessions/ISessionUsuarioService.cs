@@ -2,7 +2,7 @@
 
 namespace PoolPiscinas.Sessions
 {
-    public interface IUsuarioService
+    public interface ISessionUsuarioService
     {
         public Usuario Login(Usuario usuario);
     }

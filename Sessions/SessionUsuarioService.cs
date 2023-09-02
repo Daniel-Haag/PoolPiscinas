@@ -4,11 +4,11 @@ using PoolPiscinas.Models;
 
 namespace PoolPiscinas.Sessions
 {
-    public class UsuarioService : IUsuarioService
+    public class SessionUsuarioService : ISessionUsuarioService
     {
         private List<Usuario> usuarios;
 
-        public UsuarioService()
+        public SessionUsuarioService()
         {
             usuarios = new List<Usuario>()
             {

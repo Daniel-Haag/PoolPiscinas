@@ -136,7 +136,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Cadastrar</button>
+                <button type="button" class="btn btn-primary" id="btnCadastrar">Cadastrar</button>
             </div>
         </div>
     </div>
@@ -171,6 +171,51 @@
             $("#clienteCampos").toggle(selectedFuncao === "cliente");
             $("#piscineiroCampos").toggle(selectedFuncao === "piscineiro");
             $("#franqueadoCampos").toggle(selectedFuncao === "franqueado");
+        });
+
+        // Evento de clique no botão "Cadastrar"
+        $("#btnCadastrar").click(function () {
+            // Coleta os dados do formulário
+            var funcao = $("#funcao").val();
+            var nome = $("#nome").val();
+            var email = $("#email").val();
+            var cpf = $("#cpf").val();
+            var cnpj = $("#cnpj").val();
+            var senha = $("#senha").val();
+
+            // Cria um objeto de usuário com os dados coletados
+            var usuario = {
+                RoleID: 1, // Define o RoleID conforme necessário
+                Nome: nome,
+                Email: email,
+                CPF: cpf,
+                CNPJ: cnpj,
+                Senha: senha,
+                Ativo: true
+            };
+
+            // Envia os dados do usuário para o servidor
+            $.ajax({
+                url: "/Login/CreateUsuario", // O URL para o método CreateUsuario
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(usuario),
+                success: function (response) {
+                    // Lida com a resposta do servidor (por exemplo, redireciona ou exibe uma mensagem)
+                    if (response.success) {
+                        // Cadastrado com sucesso, pode redirecionar ou fazer algo
+                        window.location.href = "/Login/Login"; // Redireciona para a página de login
+                    } else {
+                        // Ocorreu um erro, exibe uma mensagem de erro ou lida de acordo
+                        alert("Erro ao cadastrar usuário: " + response.message);
+                    }
+                },
+                error: function () {
+                    // Lida com erros de comunicação com o servidor
+                    alert("Erro ao conectar com o servidor.");
+                }
+            });
         });
 
         VMasker(document.getElementById("cpfInput")).maskPattern("999.999.999-99");

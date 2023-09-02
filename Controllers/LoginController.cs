@@ -18,16 +18,19 @@ namespace PoolPiscinas.Controllers
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> _logger;
-        private IUsuarioService _usuarioService;
+        private ISessionUsuarioService _sessionUsuarioService;
         private ILoginService _loginService;
+        private IUsuarioService _usuarioService;
 
         public LoginController(ILogger<LoginController> logger,
-                               IUsuarioService usuarioService,
-                               ILoginService loginService)
+                               ISessionUsuarioService sessionUsuarioService,
+                               ILoginService loginService,
+                               IUsuarioService usuarioService)
         {
             _logger = logger;
-            _usuarioService = usuarioService;
+            _sessionUsuarioService = sessionUsuarioService;
             _loginService = loginService;
+            _usuarioService = usuarioService;
         }
 
         public IActionResult Login()
@@ -58,7 +61,7 @@ namespace PoolPiscinas.Controllers
                     }
                 };
 
-                var usuario = _usuarioService.Login(usuarioLogando);
+                var usuario = _sessionUsuarioService.Login(usuarioLogando);
 
                 if (usuario != null)
                 {
@@ -104,6 +107,13 @@ namespace PoolPiscinas.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult CreateUsuario([FromBody]Usuario usuario)
+        {
+            _usuarioService.CreateNewUser(usuario);
+            return Ok(new { success = true, message = "Usuário criado com sucesso" });
         }
     }
 }

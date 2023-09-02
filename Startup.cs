@@ -41,8 +41,9 @@ namespace PoolPiscinas
                     policy.RequireAuthenticatedUser();
                 });
             });
-            services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<ISessionUsuarioService, SessionUsuarioService>();
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<PoolPiscinasDbContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 1, 0))));
