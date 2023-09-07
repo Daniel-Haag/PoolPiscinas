@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PoolPiscinas.Interfaces;
 using PoolPiscinas.Models;
 using System;
+using System.Collections.Generic;
 
 namespace PoolPiscinas.Services
 {

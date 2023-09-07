@@ -8,7 +8,7 @@ namespace PoolPiscinas.Models
     {
         public string CPF { get; set; }
         public string CNPJ { get; set; }
-        [Required]
+        [Required(ErrorMessage = "O campo Senha é obrigatório.")]
         [DataType(DataType.Password)]
         public string Senha { get; set; }
     }

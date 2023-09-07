@@ -1,11 +1,12 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace PoolPiscinas.Models
 {
     public class Usuario
     {
         public int UsuarioID { get; set; }
-        public int RoleID { get; set; }
+        public int RoleID { get; set; } 
         public Role Role { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }

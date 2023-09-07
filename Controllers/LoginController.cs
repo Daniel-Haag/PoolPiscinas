@@ -40,14 +40,9 @@ namespace PoolPiscinas.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginModel loginModel)
+        public IActionResult Login(Usuario usuarioLogin)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            if ((loginModel.CPF == "111.111.111-11" || loginModel.CNPJ == "11.111.111/1111-11") && loginModel.Senha == "password")
+            if ((usuarioLogin.CPF == "111.111.111-11" || usuarioLogin.CNPJ == "11.111.111/1111-11") && usuarioLogin.Senha == "password")
             {
                 var usuarioLogando = new Usuario
                 {
@@ -110,10 +105,24 @@ namespace PoolPiscinas.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario([FromBody]Usuario usuario)
+        public IActionResult CreateUsuario(Usuario usuario)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new ApiResponse 
+                {
+                    Success = false,
+                    Message = "Erro de validação do modelo."
+                });
+            }
+
             _usuarioService.CreateNewUser(usuario);
-            return Ok(new { success = true, message = "Usuário criado com sucesso" });
+
+            return Json(new ApiResponse
+            {
+                Success = true,
+                Message = "Usuário cadastrado com sucesso."
+            });
         }
     }
 }
