@@ -105,7 +105,7 @@ namespace PoolPiscinas.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario(Usuario usuario)
+        public IActionResult CreateUsuario([FromBody]Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
