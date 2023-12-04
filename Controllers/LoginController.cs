@@ -21,20 +21,33 @@ namespace PoolPiscinas.Controllers
         private ISessionUsuarioService _sessionUsuarioService;
         private ILoginService _loginService;
         private IUsuarioService _usuarioService;
+        private IRoleService _roleService;
+        private IFranquiaService _franquiaService;
+        private IFranqueadoService _franqueadoService;
 
         public LoginController(ILogger<LoginController> logger,
                                ISessionUsuarioService sessionUsuarioService,
                                ILoginService loginService,
-                               IUsuarioService usuarioService)
+                               IUsuarioService usuarioService,
+                               IRoleService roleService,
+                               IFranquiaService franquiaService,
+                               IFranqueadoService franqueadoService)
         {
             _logger = logger;
             _sessionUsuarioService = sessionUsuarioService;
             _loginService = loginService;
             _usuarioService = usuarioService;
+            _roleService = roleService;
+            _franquiaService = franquiaService;
+            _franqueadoService = franqueadoService;
         }
 
         public IActionResult Login()
         {
+            ViewBag.Funcoes = _roleService.GetAllRoles();
+            ViewBag.Franquias = _franquiaService.GetAllFranquias();
+            ViewBag.Franqueados = _franqueadoService.GetAllFranqueados();
+
             _loginService.RemoveSession(HttpContext);
             return View();
         }
@@ -42,7 +55,7 @@ namespace PoolPiscinas.Controllers
         [HttpPost]
         public IActionResult Login(Usuario usuarioLogin)
         {
-            if ((usuarioLogin.CPF == "111.111.111-11" || usuarioLogin.CNPJ == "11.111.111/1111-11") && usuarioLogin.Senha == "password")
+            if ((usuarioLogin.CPF == "111.111.111-11" || usuarioLogin.CNPJ == "11.111.111/1111-11") && usuarioLogin.Senha == "123")
             {
                 var usuarioLogando = new Usuario
                 {
@@ -116,7 +129,31 @@ namespace PoolPiscinas.Controllers
                 });
             }
 
+            var role = _roleService.GetRoleByID(usuario.RoleID);
+
             _usuarioService.CreateNewUser(usuario);
+
+            //Definir enumerador para roles
+            if (role.RoleID == 1)
+            {
+
+            }
+            else if (role.RoleID == 2)
+            {
+
+            }
+            else if (role.RoleID == 3)
+            {
+                //var franquia = _franquiaService.GetFranquiaByID(usuario.f)
+
+                //var franqueado = new Franqueado()
+                //{
+                //    UsuarioID = usuario.UsuarioID,
+                //    FranquiaID = 
+                //};
+
+                //_franqueadoService.CreateNewFranqueado();
+            }
 
             return Json(new ApiResponse
             {

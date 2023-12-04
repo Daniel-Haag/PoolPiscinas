@@ -34,6 +34,7 @@ namespace PoolPiscinas
             services.AddControllersWithViews();
             services.AddSession();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAuthenticatedUser", policy =>
@@ -41,9 +42,14 @@ namespace PoolPiscinas
                     policy.RequireAuthenticatedUser();
                 });
             });
+
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<ISessionUsuarioService, SessionUsuarioService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IFranquiaService, FranquiaService>();
+            services.AddScoped<IFranqueadoService, FranqueadoService>();
+
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<PoolPiscinasDbContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 1, 0))));
