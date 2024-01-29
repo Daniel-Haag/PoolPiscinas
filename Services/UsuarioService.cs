@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PoolPiscinas.Interfaces;
 using PoolPiscinas.Models;
 using System;
@@ -12,7 +13,7 @@ namespace PoolPiscinas.Services
     {
         private readonly PoolPiscinasDbContext _poolPiscinasDbContext;
 
-        public UsuarioService(PoolPiscinasDbContext poolPiscinasDbContext) 
+        public UsuarioService(PoolPiscinasDbContext poolPiscinasDbContext)
         {
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
@@ -22,14 +23,16 @@ namespace PoolPiscinas.Services
             if (!string.IsNullOrEmpty(CPF))
             {
                 var usuario = _poolPiscinasDbContext.Usuarios
-                                .FirstOrDefault(x => x.CPF == CPF && senha == x.Senha);
+                                .Include(x => x.Role)
+                                .FirstOrDefault(x => x.CPF == CPF && senha == x.Senha && x.Ativo);
 
                 return usuario;
             }
             else if (!string.IsNullOrEmpty(CNPJ))
             {
                 var usuario = _poolPiscinasDbContext.Usuarios
-                                .FirstOrDefault(x => x.CNPJ == CNPJ && senha == x.Senha);
+                                .Include(x => x.Role)
+                                .FirstOrDefault(x => x.CNPJ == CNPJ && senha == x.Senha && x.Ativo);
 
                 return usuario;
             }

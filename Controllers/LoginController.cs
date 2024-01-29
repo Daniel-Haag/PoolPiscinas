@@ -42,6 +42,7 @@ namespace PoolPiscinas.Controllers
             _franqueadoService = franqueadoService;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             ViewBag.Funcoes = _roleService.GetAllRoles();
@@ -68,26 +69,31 @@ namespace PoolPiscinas.Controllers
             else
             {
                 ModelState.AddModelError(string.Empty, "Tentativa inválida de login.");
+
+                ViewBag.Funcoes = _roleService.GetAllRoles();
+                ViewBag.Franquias = _franquiaService.GetAllFranquias();
+                ViewBag.Franqueados = _franqueadoService.GetAllFranqueados();
+
+                _loginService.RemoveSession(HttpContext);
+                return View();
             }
 
             //-----------------------------------------------------------------------------
 
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
-                    //Adicionar outras claims aqui, se necessário
-                };
+            //var claims = new List<Claim>
+            //    {
+            //        new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
+            //        //Adicionar outras claims aqui, se necessário
+            //    };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
-            };
+            //var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //var authProperties = new AuthenticationProperties
+            //{
+            //    IsPersistent = true,
+            //    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            //};
 
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-            return RedirectToAction("Index", "Home");
+            //HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
         [HttpGet]
