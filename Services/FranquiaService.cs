@@ -26,7 +26,7 @@ namespace PoolPiscinas.Services
         public Franquia GetFranquiaByID(int ID)
         {
             return _poolPiscinasDbContext.Franquias
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.FranquiaID == ID);
         }
 
         public void CreateNewFranquia(Franquia franquia)

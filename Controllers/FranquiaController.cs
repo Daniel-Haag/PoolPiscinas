@@ -51,10 +51,10 @@ namespace PoolPiscinas.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int franquiaID)
+        public ActionResult Edit(int ID)
         {
             TempData["SuccessMessage"] = null;
-            ViewBag.Franquia = _franquiaService.GetFranquiaByID(franquiaID);
+            ViewBag.Franquia = _franquiaService.GetFranquiaByID(ID);
             return View();
         }
 
