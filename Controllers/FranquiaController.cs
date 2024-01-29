@@ -1,17 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using PoolPiscinas.Interfaces;
 using PoolPiscinas.Models;
 using System;
+using System.Linq;
+using System.Net.WebSockets;
 
 namespace PoolPiscinas.Controllers
 {
     public class FranquiaController : Controller
     {
         private IFranquiaService _franquiaService;
+        private IUsuarioService _usuarioService;
+        private IFranqueadoService _franqueadoService;
 
-        public FranquiaController(IFranquiaService franquiaService)
+        public FranquiaController(IFranquiaService franquiaService,
+                                  IUsuarioService usuarioService,
+                                  IFranqueadoService franqueadoService)
         {
             _franquiaService = franquiaService;
+            _usuarioService = usuarioService;
+            _franqueadoService = franqueadoService;
         }
 
         [HttpGet]
@@ -39,6 +48,50 @@ namespace PoolPiscinas.Controllers
         {
             try
             {
+                //Se for franqueado, só pode cadastrar uma por vez
+                var usuarioID = HttpContext.Session.GetInt32("UsuarioID");
+                var usuario = _usuarioService.GetUsuarioByID((int)usuarioID);
+
+                //Incluir enumerador
+                if (usuario.Role.Nome == "Franqueado")
+                {
+                    var franqueado = _franqueadoService.GetAllFranqueados()
+                        .FirstOrDefault(x => x.UsuarioID == usuario.UsuarioID);
+
+                    if (franqueado == null)
+                    {
+                        _franquiaService.CreateNewFranquia(franquia);
+
+                        Franqueado novoFranqueado = new Franqueado()
+                        {
+                            UsuarioID = usuario.UsuarioID,
+                            Usuario = usuario,
+                            FranquiaID = franquia.FranquiaID,
+                            Franquia = franquia
+                        };
+
+                        _franqueadoService.CreateNewFranqueado(novoFranqueado);
+
+                        TempData["SuccessMessage"] = "Registro efetuado com sucesso!";
+                        return View();
+                    }
+                    else if (franqueado != null)
+                    {
+                        var franquiaExistente = _franquiaService.GetFranquiaByID(franqueado.FranquiaID);
+
+                        if (franquiaExistente != null)
+                        {
+                            TempData["ErrorMessage"] = "Franquia já existente!";
+                            return View();
+                        }
+                        else
+                        {
+                            _franquiaService.CreateNewFranquia(franquia);
+                            TempData["SuccessMessage"] = "Registro efetuado com sucesso!";
+                            return View();
+                        }
+                    }
+                }
                 _franquiaService.CreateNewFranquia(franquia);
                 TempData["SuccessMessage"] = "Registro efetuado com sucesso!";
                 return View();

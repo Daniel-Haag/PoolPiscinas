@@ -18,6 +18,22 @@ namespace PoolPiscinas.Services
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
 
+        public Usuario GetUsuarioByID(int ID)
+        {
+            try
+            {
+                var usuario = _poolPiscinasDbContext.Usuarios
+                    .Include(x => x.Role)
+                    .FirstOrDefault(x => x.UsuarioID == ID);
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter usuário!");
+            }
+        }
+
         public Usuario GetUsuarioByCPForCNPJandSenha(string CPF, string CNPJ, string senha)
         {
             if (!string.IsNullOrEmpty(CPF))
