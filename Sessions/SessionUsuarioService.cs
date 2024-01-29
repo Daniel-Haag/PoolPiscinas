@@ -1,46 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PoolPiscinas.Interfaces;
 using PoolPiscinas.Models;
 
 namespace PoolPiscinas.Sessions
 {
     public class SessionUsuarioService : ISessionUsuarioService
     {
-        private List<Usuario> usuarios;
+        private readonly IUsuarioService _usuarioService;
 
-        public SessionUsuarioService()
+        public SessionUsuarioService(IUsuarioService usuarioService)
         {
-            usuarios = new List<Usuario>()
-            {
-                new Usuario()
-                {
-                    Nome = "Usuario 1",
-                    Senha = "123",
-                    Role = new Role()
-                    {
-                        RoleID = 1,
-                        Nome = "Piscineiro",
-                        Ativo = true
-                    }
-                },
-                new Usuario()
-                {
-                    Nome = "Usuario 2",
-                    Senha = "123",
-                    Role = new Role()
-                    {
-                        RoleID = 1,
-                        Nome = "Piscineiro",
-                        Ativo = true
-                    }
-                }
-            };
-
+            _usuarioService = usuarioService;
         }
 
-        public Usuario Login(Usuario usuario)
+        public Usuario Login(Usuario usuarioLogin)
         {
-            return usuarios.SingleOrDefault(x => x.Nome == usuario.Nome && x.Senha == usuario.Senha);
+            var usuario = _usuarioService
+                .GetUsuarioByCPForCNPJandSenha(usuarioLogin.CPF, usuarioLogin.CNPJ, usuarioLogin.Senha);
+
+            return usuario;
         }
     }
 }

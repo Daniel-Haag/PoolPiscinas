@@ -55,53 +55,39 @@ namespace PoolPiscinas.Controllers
         [HttpPost]
         public IActionResult Login(Usuario usuarioLogin)
         {
-            if ((usuarioLogin.CPF == "111.111.111-11" || usuarioLogin.CNPJ == "11.111.111/1111-11") && usuarioLogin.Senha == "123")
+            var usuario = _sessionUsuarioService.Login(usuarioLogin);
+
+            if (usuario != null)
             {
-                var usuarioLogando = new Usuario
-                {
-                    Nome = "Usuario 1",
-                    Senha = "123",
-                    Role = new Role()
-                    {
-                        RoleID = 1,
-                        Nome = "Franqueado",
-                        Ativo = true
-                    }
-                };
-
-                var usuario = _sessionUsuarioService.Login(usuarioLogando);
-
-                if (usuario != null)
-                {
-                    HttpContext.Session.SetString("Nome", usuario.Nome);
-                    HttpContext.Session.SetString("Role", usuario.Role.Nome);
-                    return RedirectToAction("Index", "Home");
-                }
-
-                //-----------------------------------
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
-                    //Adicionar outras claims aqui, se necessário
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true, 
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
-                };
-
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                HttpContext.Session.SetString("Nome", usuario.Nome);
+                HttpContext.Session.SetString("Role", usuario.Role.Nome);
+                HttpContext.Session.SetInt32("UsuarioID", usuario.UsuarioID);
 
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Tentativa inválida de login.");
-                return View();
             }
+
+            //-----------------------------------------------------------------------------
+
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
+                    //Adicionar outras claims aqui, se necessário
+                };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -118,11 +104,11 @@ namespace PoolPiscinas.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario([FromBody]Usuario usuario)
+        public IActionResult CreateUsuario([FromBody] Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ApiResponse 
+                return Json(new ApiResponse
                 {
                     Success = false,
                     Message = "Erro de validação do modelo."

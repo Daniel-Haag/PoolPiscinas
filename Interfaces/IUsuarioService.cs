@@ -5,6 +5,7 @@ namespace PoolPiscinas.Interfaces
 {
     public interface IUsuarioService
     {
-        public void CreateNewUser(Usuario usuario);
+        Usuario GetUsuarioByCPForCNPJandSenha(string CPF, string CNPJ, string senha);
+        void CreateNewUser(Usuario usuario);
     }
 }
