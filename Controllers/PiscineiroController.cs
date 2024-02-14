@@ -86,34 +86,57 @@ namespace PoolPiscinas.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Cadastro efetuado somente por Franqueados
+        /// </summary>
+        /// <param name="novoUsuarioPiscineiro"></param>
+        /// <returns></returns>
         [HttpPost]
-        public IActionResult Create(Piscineiro Piscineiro)
+        public IActionResult Create(Usuario novoUsuarioPiscineiro)
         {
             try
             {
                 var usuarioID = HttpContext.Session.GetInt32("UsuarioID");
                 var usuarioLogado = _usuarioService.GetUsuarioByID((int)usuarioID);
 
-                //Necessário enumerador
-                var usuario = new Usuario()
+                var franqueado = _franqueadoService.GetAllFranqueados()
+                    .FirstOrDefault(x => x.UsuarioID == usuarioLogado.UsuarioID);
+
+                if (franqueado != null)
                 {
-                    RoleID = 2,
-                    Nome = Piscineiro.Usuario.Nome,
-                    CPF = Piscineiro.Usuario.CPF,
-                    CNPJ = Piscineiro.Usuario.CNPJ,
-                    Senha = "123",
-                    Ativo = true,
-                    Email = Piscineiro.Usuario.Email
-                };
+                    var franquia = _franquiaService.GetFranquiaByID(franqueado.FranquiaID);
 
-                _usuarioService.CreateNewUser(usuario);
+                    //Necessário enumerador
+                    var usuario = new Usuario()
+                    {
+                        RoleID = 2,
+                        Nome = novoUsuarioPiscineiro.Nome,
+                        CPF = novoUsuarioPiscineiro.CPF,
+                        CNPJ = novoUsuarioPiscineiro.CNPJ,
+                        Senha = "123",
+                        Ativo = true,
+                        Email = novoUsuarioPiscineiro.Email
+                    };
 
-                Piscineiro.UsuarioID = usuario.UsuarioID;
-                Piscineiro.Usuario = null;
+                    _usuarioService.CreateNewUser(usuario);
 
-                _piscineiroService.CreateNewPiscineiro(Piscineiro);
+                    var piscineiro = new Piscineiro()
+                    {
+                        UsuarioID = usuario.UsuarioID,
+                        FranquiaID = franquia.FranquiaID
+                    };
 
-                TempData["SuccessMessage"] = "Registro efetuado com sucesso!";
+                    piscineiro.Usuario = null;
+                    piscineiro.Franquia = null;
+
+                    //Piscineiro.UsuarioID = usuario.UsuarioID;
+                    //Piscineiro.Usuario = null;
+
+                    _piscineiroService.CreateNewPiscineiro(piscineiro);
+
+                    TempData["SuccessMessage"] = "Registro efetuado com sucesso!";
+                }
+
             }
             catch (Exception e)
             {
