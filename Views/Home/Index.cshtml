@@ -43,10 +43,28 @@
             background-color: rgba(200, 200, 200, 0.5);
             cursor: pointer;
         }
+
+        .has-records {
+            position: relative; /* Adiciona posicionamento relativo para posicionar a bolinha dentro do elemento */
+        }
+
+            .has-records::after {
+                content: ''; /* Adiciona um elemento pseudo ::after para representar a bolinha */
+                width: 25px;
+                height: 25px;
+                /*background-color: #86c7ff;*/ /* Cor da bolinha */
+                background-color: rgba(134, 199, 255, 0.5);
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
     </style>
 </head>
 <body>
-    <div class="card p-4 shadow" style="margin-top: 50px">
+    <div class="card p-4 shadow" style="margin-top: 50px; margin-bottom: 50px">
         <h2 style="font-weight: 600; font-size: 24px;">Agenda</h2>
         <h3 style="font-weight: 500; font-size: 20px;">@ViewBag.CurrentDate.ToString("MMMM yyyy")</h3>
 
@@ -72,10 +90,86 @@
                 var dayName = date.ToString("ddd");
                 var offset = (int)date.DayOfWeek; // Obter o deslocamento para o primeiro dia da semana
 
-                <div class="day @(date.Date == ViewBag.CurrentDate.Date ? "today" : "")" style="grid-column: @(offset + 1) / span 1;">
+               @* <div class="day @(date.Date == ViewBag.CurrentDate.Date ? "today" : "")" style="grid-column: @(offset + 1) / span 1;">
+                    <span class="day-number">@day</span>
+                </div>*@
+
+                <div class="day @(date.Date == ViewBag.CurrentDate.Date ? "today" : "") @(ViewBag.DiasComRegistros.Contains(day) ? "has-records" : "")" style="grid-column: @(offset + 1) / span 1;">
                     <span class="day-number">@day</span>
                 </div>
             }
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="container mt-4" style="margin-left:0%">
+        <h2>Ordens de Serviço</h2>
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <a href="/OrdemServico/Create" class="btn btn-primary btn-sm float-right" style="margin-left: 5%;">
+                        <i class="fas fa-plus"></i> Novo
+                    </a>
+                    <table id="listagem" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Seleção</th>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descricao</th>
+                                <th>Data Inicial</th>
+                                <th>Data Final</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var ordemServico in ViewBag.OrdensServico)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selecao[]" value="@ordemServico.OrdemServicoID">
+                                        </td>
+                                        <td>@ordemServico.OrdemServicoID</td>
+                                        <td>@ordemServico.Nome</td>
+                                        <td>@ordemServico.Descricao</td>
+                                        <td>@ordemServico.Agenda?.DataInicial</td>
+                                        <td>@ordemServico.Agenda?.DataFinal</td>
+                                        <td>
+                                            <a href="/OrdemServico/Edit/@ordemServico.OrdemServicoID" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <button class="btn btn-danger btn-sm delete-button" data-ordemservico-id="@ordemServico.OrdemServicoID">
+                                                <i class="fas fa-trash"></i> Excluir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="confirmDeleteModal" tabindex="-1" role="dialog" style="width:80%; margin-left:10%">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza de que deseja excluir este registro?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Confirmar</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -95,10 +189,17 @@
                             <label for="startDate">Data agendamento</label>
                             <input type="text" class="form-control" id="startDate" name="startDate" readonly>
                         </div>
-                       @* <div class="form-group">
-                            <label for="endDate">Data Final</label>
-                            <input type="date" class="form-control" id="endDate" name="endDate">
+                        @* <div class="form-group">
+                        <label for="endDate">Data Final</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate">
                         </div>*@
+                        <div class="form-group">
+                            <label for="clientSelect">Selecionar ordem</label>
+                            <select class="form-control" id="clientSelect" name="clientSelect">
+                                <option value="">Selecione uma ordem de serviço</option>
+                                <!-- Opções de clientes -->
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="clientSelect">Selecionar Cliente</label>
                             <select class="form-control" id="clientSelect" name="clientSelect">
@@ -151,6 +252,42 @@
 </html>
 
 <script>
+
+    var table = new DataTable('#listagem', {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+        },
+    });
+
+    $(document).ready(function () {
+        $(".delete-button").click(function () {
+            var ordemServico = $(this).data("ordemservico-id");
+
+            $("#confirmDelete").data("ordemservico-id", ordemServico);
+            $("#confirmDeleteModal").modal("show");
+        });
+
+        $("#confirmDelete").click(function () {
+            var ordemServicoId = $(this).data("ordemservico-id");
+
+            // Envia uma solicitação AJAX para confirmar a exclusão
+            $.ajax({
+                type: 'POST',
+                url: '/OrdemServico/Delete/' + ordemServicoId,
+                success: function (response) {
+
+                    $("#confirmDeleteModal").modal("hide");
+                    window.location.reload();
+                },
+                error: function (error) {
+                    alert('Erro, exclusão não efetuada!');
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+
     $(function () {
         // Evento de clique para os dias do calendário
         $(".day").click(function () {

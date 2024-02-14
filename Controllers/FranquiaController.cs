@@ -98,7 +98,7 @@ namespace PoolPiscinas.Controllers
             }
             catch (Exception e)
             {
-                TempData["ErrorMessage"] = "Ocorreu um erro!";
+                TempData["ErrorMessage"] = "Erro ao efetuar o registro!";
                 return View();
             }
         }

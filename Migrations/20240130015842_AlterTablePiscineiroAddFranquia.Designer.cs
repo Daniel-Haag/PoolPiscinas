@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PoolPiscinas.Models;
 
 namespace PoolPiscinas.Migrations
 {
     [DbContext(typeof(PoolPiscinasDbContext))]
-    partial class PoolPiscinasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240130015842_AlterTablePiscineiroAddFranquia")]
+    partial class AlterTablePiscineiroAddFranquia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,7 +206,7 @@ namespace PoolPiscinas.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("AgendaID")
+                    b.Property<int>("AgendaID")
                         .HasColumnType("int");
 
                     b.Property<int>("ClienteID")
@@ -410,7 +412,9 @@ namespace PoolPiscinas.Migrations
                 {
                     b.HasOne("PoolPiscinas.Models.Agenda", "Agenda")
                         .WithMany()
-                        .HasForeignKey("AgendaID");
+                        .HasForeignKey("AgendaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PoolPiscinas.Models.Cliente", "Cliente")
                         .WithMany()

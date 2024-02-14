@@ -3,6 +3,19 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+<style>
+    .navbar-nav .nav-item {
+        transition: text-shadow 0.3s ease; 
+    }
+
+    .navbar-nav .nav-item:hover {
+        text-shadow: 0 0 5px #00F3FF; 
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #00F3FF; 
+    }
+</style>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,7 +47,7 @@
 
     @if (!string.IsNullOrEmpty(usuarioLogado))
     {
-        <header>
+        <header style="margin-bottom: 30px">
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
@@ -50,15 +63,21 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contato">Contato</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contato">Minha Agenda</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Contato">Roles</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Franquia" asp-action="Index">Franquias</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Franquia" asp-action="Index">Franquia</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Piscineiro" asp-action="IndexPiscineirosFranqueado">Piscineiros</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Clientes</a>
+                            </li>
+                            <li class="nav-item ml-auto">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Sair</a>
                             </li>
                         </ul>
@@ -74,11 +93,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @*<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - PoolPiscinas - <a asp-area="" asp-controller="Home" asp-action="Contato">Contato</a>
         </div>
-    </footer>
+    </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

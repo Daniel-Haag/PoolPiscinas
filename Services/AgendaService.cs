@@ -9,38 +9,42 @@ using System.Linq;
 
 namespace PoolPiscinas.Services
 {
-    public class FranqueadoService : IFranqueadoService
+    public class AgendaService : IAgendaService
     {
         private readonly PoolPiscinasDbContext _poolPiscinasDbContext;
 
-        public FranqueadoService(PoolPiscinasDbContext poolPiscinasDbContext) 
+        public AgendaService(PoolPiscinasDbContext poolPiscinasDbContext)
         {
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
 
-        public List<Franqueado> GetAllFranqueados()
+        public List<Agenda> GetAllAgendas()
         {
-            return _poolPiscinasDbContext.Franqueados
+            return _poolPiscinasDbContext.Agendas
                 .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
-                .Where(x => x.Usuario.Ativo)
                 .ToList();
         }
 
-        public Franqueado GetFranqueadoByID(int ID)
+        public Agenda GetAgendaByID(int ID)
         {
-            return _poolPiscinasDbContext.Franqueados
+            return _poolPiscinasDbContext.Agendas
                 .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
-                .Where(x => x.Usuario.Ativo)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.AgendaID == ID);
         }
 
-        public void CreateNewFranqueado(Franqueado Franqueado)
+        public List<Agenda> GetAgendaByMonthYear(int month, int year)
+        {
+            return _poolPiscinasDbContext.Agendas
+                .Include(x => x.Usuario)
+                .Where(x => x.DataInicial.Month == month && x.DataFinal.Year == year)
+                .ToList();
+        }
+
+        public void CreateNewAgenda(Agenda Agenda)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Add(Franqueado);
+                _poolPiscinasDbContext.Agendas.Add(Agenda);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -50,11 +54,11 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void UpdateFranqueado(Franqueado Franqueado)
+        public void UpdateAgenda(Agenda Agenda)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Update(Franqueado);
+                _poolPiscinasDbContext.Agendas.Update(Agenda);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -63,13 +67,12 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void DeleteFranqueado(int ID)
+        public void DeleteAgenda(int ID)
         {
             try
             {
-                var Franqueado = GetFranqueadoByID(ID);
-                Franqueado.Usuario.Ativo = false;
-                _poolPiscinasDbContext.Update(Franqueado);
+                var Agenda = GetAgendaByID(ID);
+                _poolPiscinasDbContext.Agendas.Remove(Agenda);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)

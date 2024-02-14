@@ -9,38 +9,36 @@ using System.Linq;
 
 namespace PoolPiscinas.Services
 {
-    public class FranqueadoService : IFranqueadoService
+    public class OrdemServicoService : IOrdemServicoService
     {
         private readonly PoolPiscinasDbContext _poolPiscinasDbContext;
 
-        public FranqueadoService(PoolPiscinasDbContext poolPiscinasDbContext) 
+        public OrdemServicoService(PoolPiscinasDbContext poolPiscinasDbContext) 
         {
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
 
-        public List<Franqueado> GetAllFranqueados()
+        public List<OrdemServico> GetAllOrdemServicos()
         {
-            return _poolPiscinasDbContext.Franqueados
-                .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
-                .Where(x => x.Usuario.Ativo)
+            return _poolPiscinasDbContext.OrdemServicos
+                .Include(x => x.Agenda)
+                .Include(x => x.Cliente)
                 .ToList();
         }
 
-        public Franqueado GetFranqueadoByID(int ID)
+        public OrdemServico GetOrdemServicoByID(int ID)
         {
-            return _poolPiscinasDbContext.Franqueados
-                .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
-                .Where(x => x.Usuario.Ativo)
+            return _poolPiscinasDbContext.OrdemServicos
+                .Include(x => x.Agenda)
+                .Include(x => x.Cliente)
                 .FirstOrDefault();
         }
 
-        public void CreateNewFranqueado(Franqueado Franqueado)
+        public void CreateNewOrdemServico(OrdemServico OrdemServico)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Add(Franqueado);
+                _poolPiscinasDbContext.OrdemServicos.Add(OrdemServico);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -50,11 +48,11 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void UpdateFranqueado(Franqueado Franqueado)
+        public void UpdateOrdemServico(OrdemServico OrdemServico)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Update(Franqueado);
+                _poolPiscinasDbContext.OrdemServicos.Update(OrdemServico);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -63,13 +61,12 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void DeleteFranqueado(int ID)
+        public void DeleteOrdemServico(int ID)
         {
             try
             {
-                var Franqueado = GetFranqueadoByID(ID);
-                Franqueado.Usuario.Ativo = false;
-                _poolPiscinasDbContext.Update(Franqueado);
+                var OrdemServico = GetOrdemServicoByID(ID);
+                _poolPiscinasDbContext.OrdemServicos.Remove(OrdemServico);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)

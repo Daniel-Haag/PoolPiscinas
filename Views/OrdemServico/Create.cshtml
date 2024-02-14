@@ -1,7 +1,7 @@
-﻿@model Franquia
+﻿@model OrdemServico
 
 @{
-    ViewData["Title"] = "Cadastro de Franquias";
+    ViewData["Title"] = "Ordens de Serviço";
 }
 <style>
     fade-in-out {
@@ -69,7 +69,7 @@
                     }
                     <form asp-action="Create">
                         <div class="form-group">
-                            <label asp-for="Nome">Nome da Franquia</label>
+                            <label asp-for="Nome">Título da Ordem</label>
                             <input asp-for="Nome" class="form-control" />
                             <span asp-validation-for="Nome" class="text-danger"></span>
                         </div>
@@ -80,14 +80,50 @@
                             <span asp-validation-for="Descricao" class="text-danger"></span>
                         </div>
 
-                         <div class="form-group">
-                            <label asp-for="CNPJ">CNPJ:</label>
-                            <input asp-for="CNPJ" id="cnpjInput" class="form-control" />
+                        <label asp-for="ClienteID">Cliente</label>
+                        <select asp-for="ClienteID" class="form-control">
+
+                             <option value="0">
+
+                             </option>
+
+                            @foreach (var usuarioCliente in ViewBag.UsuariosClientes)
+                            {
+                                <option value="@usuarioCliente.ClienteID">
+                                    @usuarioCliente.Usuario.Nome
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="ClienteID" class="text-danger"></span>
+
+                        @* <div class="form-group">
+                            <label asp-for="Agenda.DataInicial">Data Inicial:</label>
+                            <input asp-for="Agenda.DataInicial" class="form-control" />
                         </div>
+
+                        <div class="form-group">
+                            <label asp-for="Agenda.DataFinal">Data Final:</label>
+                            <input asp-for="Agenda.DataFinal" class="form-control" />
+                        </div>
+
+                        <label asp-for="Agenda.UsuarioID">Usuário Responsável</label>
+                        <select asp-for="ClienteID" class="form-control">
+
+                            <option value="0">
+
+                            </option>
+
+                            @foreach (var usuarioResponsavel in ViewBag.UsuariosResponsaveis)
+                            {
+                                <option value="@usuarioResponsavel.UsuarioID">
+                                    @usuarioResponsavel.Nome
+                                </option>
+                            }
+                        </select>*@
                         <!-- Adicionar outros campos relevantes aqui, se necessário -->
                         <hr />
                         <button type="submit" class="btn btn-primary">Salvar</button>
-                        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Voltar</a>
                     </form>
                 </div>
             </div>

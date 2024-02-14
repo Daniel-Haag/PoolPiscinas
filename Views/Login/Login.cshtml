@@ -8,7 +8,7 @@
 
 <style>
     .bg-lightPrimary {
-        background-color: #6495ed; /* Altere para a cor de fundo desejada */
+        background-color: #6495ed; /* Alterar para a cor de fundo desejada */
     }
 </style>
 
@@ -130,7 +130,7 @@
                         @foreach (var franqueado in ViewBag.Franqueados)
                         {
                             <option value="@franqueado.FranqueadoID">
-                                @franqueado.Nome
+                                @franqueado.Usuario.Nome
                             </option>
                         }
                     </select>
@@ -194,26 +194,6 @@
     }
 
         var roleID;
-
-        $("input[name='loginType']").change(function () {
-
-            var selectedValue = $(this).val();
-
-            if (selectedValue === "cpf") {
-                $("#cpfGroup").show();
-                $("#cnpjGroup").hide();
-                $("#cpfInput").val("");
-            } else if (selectedValue === "cnpj") {
-                $("#cpfGroup").hide();
-                $("#cnpjGroup").show();
-                $("#cnpjInput").val("");
-            } else {
-                $("#cpfGroup").hide();
-                $("#cnpjGroup").hide();
-                $("#cpfInput").val("");
-                $("#cnpjInput").val("");
-            }
-        });
 
         $("#funcao").change(function () {
             var selectedFuncao = $(this).val();
@@ -327,11 +307,6 @@
                 }
             });
         });
-
-        VMasker(document.getElementById("cpfInput")).maskPattern("999.999.999-99");
-        VMasker(document.getElementById("cnpjInput")).maskPattern("99.999.999/9999-99");
-        VMasker(document.getElementById("cpf")).maskPattern("999.999.999-99");
-        VMasker(document.getElementById("cnpj")).maskPattern("99.999.999/9999-99");
     });
 </script>
 

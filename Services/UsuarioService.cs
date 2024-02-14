@@ -18,6 +18,22 @@ namespace PoolPiscinas.Services
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
 
+        public List<Usuario> GetAllUsuarios()
+        {
+            try
+            {
+                var usuarios = _poolPiscinasDbContext.Usuarios
+                    .Include(x => x.Role)
+                    .ToList();
+
+                return usuarios;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter usuário!");
+            }
+        }
+
         public Usuario GetUsuarioByID(int ID)
         {
             try
@@ -25,6 +41,23 @@ namespace PoolPiscinas.Services
                 var usuario = _poolPiscinasDbContext.Usuarios
                     .Include(x => x.Role)
                     .FirstOrDefault(x => x.UsuarioID == ID);
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter usuário!");
+            }
+        }
+
+        public Usuario GetUsuarioFranqueadoByID(int ID)
+        {
+            try
+            {
+                //Usar enumerador
+                var usuario = _poolPiscinasDbContext.Usuarios
+                    .Include(x => x.Role)
+                    .FirstOrDefault(x => x.UsuarioID == ID && x.Role.Nome == "Franqueado");
 
                 return usuario;
             }

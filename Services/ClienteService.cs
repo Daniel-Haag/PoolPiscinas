@@ -9,38 +9,38 @@ using System.Linq;
 
 namespace PoolPiscinas.Services
 {
-    public class FranqueadoService : IFranqueadoService
+    public class ClienteService : IClienteService
     {
         private readonly PoolPiscinasDbContext _poolPiscinasDbContext;
 
-        public FranqueadoService(PoolPiscinasDbContext poolPiscinasDbContext) 
+        public ClienteService(PoolPiscinasDbContext poolPiscinasDbContext)
         {
             _poolPiscinasDbContext = poolPiscinasDbContext;
         }
 
-        public List<Franqueado> GetAllFranqueados()
+        public List<Cliente> GetAllClientes()
         {
-            return _poolPiscinasDbContext.Franqueados
+            return _poolPiscinasDbContext.Clientes
                 .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
+                .Include(x => x.Piscineiro)
                 .Where(x => x.Usuario.Ativo)
                 .ToList();
         }
 
-        public Franqueado GetFranqueadoByID(int ID)
+        public Cliente GetClienteByID(int ID)
         {
-            return _poolPiscinasDbContext.Franqueados
+            return _poolPiscinasDbContext.Clientes
                 .Include(x => x.Usuario)
-                .Include(x => x.Franquia)
+                .Include(x => x.Piscineiro)
                 .Where(x => x.Usuario.Ativo)
                 .FirstOrDefault();
         }
 
-        public void CreateNewFranqueado(Franqueado Franqueado)
+        public void CreateNewCliente(Cliente cliente)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Add(Franqueado);
+                _poolPiscinasDbContext.Clientes.Add(cliente);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -50,11 +50,11 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void UpdateFranqueado(Franqueado Franqueado)
+        public void UpdateCliente(Cliente cliente)
         {
             try
             {
-                _poolPiscinasDbContext.Franqueados.Update(Franqueado);
+                _poolPiscinasDbContext.Clientes.Update(cliente);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -63,13 +63,13 @@ namespace PoolPiscinas.Services
             }
         }
 
-        public void DeleteFranqueado(int ID)
+        public void DeleteCliente(int ID)
         {
             try
             {
-                var Franqueado = GetFranqueadoByID(ID);
-                Franqueado.Usuario.Ativo = false;
-                _poolPiscinasDbContext.Update(Franqueado);
+                var Cliente = GetClienteByID(ID);
+                Cliente.Usuario.Ativo = false;
+                _poolPiscinasDbContext.Clientes.Update(Cliente);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)

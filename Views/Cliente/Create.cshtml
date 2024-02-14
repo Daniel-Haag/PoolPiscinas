@@ -1,7 +1,7 @@
-﻿@model Franquia
+﻿@model Cliente
 
 @{
-    ViewData["Title"] = "Cadastro de Franquias";
+    ViewData["Title"] = "Cadastro de Clientes";
 }
 <style>
     fade-in-out {
@@ -69,21 +69,51 @@
                     }
                     <form asp-action="Create">
                         <div class="form-group">
-                            <label asp-for="Nome">Nome da Franquia</label>
-                            <input asp-for="Nome" class="form-control" />
-                            <span asp-validation-for="Nome" class="text-danger"></span>
+                            <label asp-for="Usuario.Nome">Nome</label>
+                            <input id="" asp-for="Usuario.Nome" class="form-control" />
+                            <span asp-validation-for="Usuario.Nome" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Descricao">Descrição</label>
-                             <input asp-for="Descricao" class="form-control" />
-                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                            <label asp-for="Usuario.CPF">CPF</label>
+                            <input id="cpfInput" asp-for="Usuario.CPF" class="form-control" />
+                            <span asp-validation-for="Usuario.CPF" class="text-danger"></span>
                         </div>
 
-                         <div class="form-group">
-                            <label asp-for="CNPJ">CNPJ:</label>
-                            <input asp-for="CNPJ" id="cnpjInput" class="form-control" />
+                        <div class="form-group">
+                            <label asp-for="Usuario.CNPJ">CNPJ</label>
+                            <input id="cnpjInput" asp-for="Usuario.CNPJ" class="form-control" />
+                            <span asp-validation-for="Usuario.CNPJ" class="text-danger"></span>
                         </div>
+
+                        <div class="form-group">
+                            <label asp-for="Endereco">Endereço</label>
+                            <input asp-for="Endereco" class="form-control" />
+                            <span asp-validation-for="Endereco" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Telefone">Telefone</label>
+                            <input type="tel" asp-for="Telefone" class="form-control" />
+                            <span asp-validation-for="Telefone" class="text-danger"></span>
+                        </div>
+
+                        <label asp-for="PiscineiroID">Piscineiro</label>
+                        <select asp-for="PiscineiroID" class="form-control">
+
+                            <option value="0">
+
+                            </option>
+
+                            @foreach (var piscineiro in ViewBag.Piscineiros)
+                            {
+                                <option value="@piscineiro.PiscineiroID">
+                                    @piscineiro.Usuario.Nome
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="PiscineiroID" class="text-danger"></span>
+
                         <!-- Adicionar outros campos relevantes aqui, se necessário -->
                         <hr />
                         <button type="submit" class="btn btn-primary">Salvar</button>

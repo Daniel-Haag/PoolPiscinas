@@ -6,15 +6,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Franquia</title>
+    <title>Piscineiros</title>
 </head>
 <body>
     <div class="container mt-4" style="margin-left:7%">
-        <h2>Franquia</h2>
+        <h2>Piscineiros</h2>
         <div class="card shadow">
             <div class="card-body">
                 <div class="table-responsive">
-                    <a href="/Franquia/Create" class="btn btn-primary btn-sm float-right" style="margin-left: 5%;">
+                    <a href="/Piscineiro/Create" class="btn btn-primary btn-sm float-right" style="margin-left: 5%;">
                         <i class="fas fa-plus"></i> Novo
                     </a>
                     <table id="listagem" class="table table-striped" style="width:100%">
@@ -23,28 +23,30 @@
                                 <th>Seleção</th>
                                 <th>ID</th>
                                 <th>Nome</th>
-                                <th>Descricao</th>
+                                <th>Email</th>
+                                <th>CPF</th>
                                 <th>CNPJ</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             @{
-                                foreach (var franquia in ViewBag.Franquias)
+                                foreach (var piscineiro in ViewBag.Piscineiros)
                                 {
                                     <tr>
                                         <td>
-                                            <input type="checkbox" name="selecao[]" value="@franquia.FranquiaID">
+                                            <input type="checkbox" name="selecao[]" value="@piscineiro.UsuarioID">
                                         </td>
-                                        <td>@franquia.FranquiaID</td>
-                                        <td>@franquia.Nome</td>
-                                        <td>@franquia.Descricao</td>
-                                        <td>@franquia.CNPJ</td>
+                                        <td>@piscineiro.PiscineiroID</td>
+                                        <td>@piscineiro.Usuario.Nome</td>
+                                        <td>@piscineiro.Usuario.Email</td>
+                                        <td>@piscineiro.Usuario.CPF</td>
+                                        <td>@piscineiro.Usuario.CNPJ</td>
                                         <td>
-                                            <a href="/Franquia/Edit/@franquia.FranquiaID" class="btn btn-primary btn-sm">
+                                            <a href="/Piscineiro/Edit/@piscineiro.UsuarioID" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete-button" data-franquia-id="@franquia.FranquiaID">
+                                            <button class="btn btn-danger btn-sm delete-button" data-piscineiro-id="@piscineiro.UsuarioID">
                                                 <i class="fas fa-trash"></i> Excluir
                                             </button>
                                         </td>
@@ -87,19 +89,19 @@
 
     $(document).ready(function () {
         $(".delete-button").click(function () {
-            var franquia = $(this).data("franquia-id");
+            var piscineiro = $(this).data("piscineiro-id");
 
-            $("#confirmDelete").data("franquia-id", franquia);
+            $("#confirmDelete").data("piscineiro-id", piscineiro);
             $("#confirmDeleteModal").modal("show");
         });
 
         $("#confirmDelete").click(function () {
-            var franquiaId = $(this).data("franquia-id");
+            var piscineiroId = $(this).data("piscineiro-id");
 
             // Envia uma solicitação AJAX para confirmar a exclusão
             $.ajax({
                 type: 'POST',
-                url: '/Franquia/Delete/' + franquiaId,
+                url: '/Piscineiro/Delete/' + piscineiroId,
                 success: function (response) {
 
                     $("#confirmDeleteModal").modal("hide");

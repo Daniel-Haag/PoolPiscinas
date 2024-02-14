@@ -77,23 +77,6 @@ namespace PoolPiscinas.Controllers
                 _loginService.RemoveSession(HttpContext);
                 return View();
             }
-
-            //-----------------------------------------------------------------------------
-
-            //var claims = new List<Claim>
-            //    {
-            //        new Claim(ClaimTypes.Name, usuario.Nome), // substituir por um nome de usuário real
-            //        //Adicionar outras claims aqui, se necessário
-            //    };
-
-            //var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //var authProperties = new AuthenticationProperties
-            //{
-            //    IsPersistent = true,
-            //    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
-            //};
-
-            //HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
         [HttpGet]

@@ -49,6 +49,10 @@ namespace PoolPiscinas
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IFranquiaService, FranquiaService>();
             services.AddScoped<IFranqueadoService, FranqueadoService>();
+            services.AddScoped<IPiscineiroService, PiscineiroService>();
+            services.AddScoped<IOrdemServicoService, OrdemServicoService>();
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IAgendaService, AgendaService>();
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<PoolPiscinasDbContext>(options =>
