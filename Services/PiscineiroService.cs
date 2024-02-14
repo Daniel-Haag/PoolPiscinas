@@ -12,10 +12,13 @@ namespace PoolPiscinas.Services
     public class PiscineiroService : IPiscineiroService
     {
         private readonly PoolPiscinasDbContext _poolPiscinasDbContext;
+        private readonly IUsuarioService _usuarioService;
 
-        public PiscineiroService(PoolPiscinasDbContext poolPiscinasDbContext) 
+        public PiscineiroService(PoolPiscinasDbContext poolPiscinasDbContext,
+            IUsuarioService usuarioService) 
         {
             _poolPiscinasDbContext = poolPiscinasDbContext;
+            _usuarioService = usuarioService;
         }
 
         public List<Piscineiro> GetAllPiscineiros()
@@ -23,6 +26,7 @@ namespace PoolPiscinas.Services
             return _poolPiscinasDbContext.Piscineiros
                 .Include(x => x.Usuario)
                 .Include(x => x.Franquia)
+                .Where(x => x.Usuario.Ativo)
                 .ToList();
         }
 
@@ -31,6 +35,7 @@ namespace PoolPiscinas.Services
             return _poolPiscinasDbContext.Piscineiros
                 .Include(x => x.Usuario)
                 .Include(x => x.Franquia)
+                .Where(x => x.Usuario.Ativo)
                 .FirstOrDefault();
         }
 
@@ -65,8 +70,12 @@ namespace PoolPiscinas.Services
         {
             try
             {
-                var Piscineiro = GetPiscineiroByID(ID);
-                _poolPiscinasDbContext.Piscineiros.Remove(Piscineiro);
+                var piscineiro = GetPiscineiroByID(ID);
+                var usuario = _usuarioService.GetUsuarioByID(piscineiro.UsuarioID);
+
+                usuario.Ativo = false;
+
+                _poolPiscinasDbContext.Usuarios.Update(usuario);
                 _poolPiscinasDbContext.SaveChanges();
             }
             catch (Exception e)

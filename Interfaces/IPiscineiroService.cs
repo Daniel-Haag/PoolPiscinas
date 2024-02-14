@@ -10,5 +10,6 @@ namespace PoolPiscinas.Interfaces
         public Piscineiro GetPiscineiroByID(int ID);
         public void CreateNewPiscineiro(Piscineiro Piscineiro);
         public void UpdatePiscineiro(Piscineiro Piscineiro);
+        public void DeletePiscineiro(int ID);
     }
 }

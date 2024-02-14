@@ -168,7 +168,8 @@ namespace PoolPiscinas.Controllers
         [HttpPost]
         public IActionResult Delete(int PiscineiroID)
         {
-            return View();
+            _piscineiroService.DeletePiscineiro(PiscineiroID);
+            return RedirectToAction("IndexPiscineirosFranqueado");
         }
     }
 }
